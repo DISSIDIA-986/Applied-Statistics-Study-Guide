@@ -78,6 +78,36 @@ $$\sigma = \frac{b - a}{\sqrt{12}} = \frac{10 - 0}{\sqrt{12}} = \frac{10}{3.464}
 
 > **解读**: 大部分时候,你的等待时间会在平均值上下浮动约2.89分钟.
 
+#### 用R实现连续均匀分布计算
+
+```r
+# 连续均匀分布 U(0, 10)
+# 问题1: P(X ≤ 3)
+punif(3, min=0, max=10)
+# [1] 0.3
+
+# 问题2: P(4 ≤ X ≤ 7)
+punif(7, 0, 10) - punif(4, 0, 10)
+# [1] 0.3
+
+# 问题3: P(X > 8) = 1 - P(X ≤ 8)
+1 - punif(8, 0, 10)
+# [1] 0.2
+
+# 问题4和5: 期望值和标准差
+# 期望值 μ = (a+b)/2
+(0 + 10) / 2
+# [1] 5
+
+# 标准差 σ = (b-a)/√12
+(10 - 0) / sqrt(12)
+# [1] 2.886751
+```
+
+> **R函数说明**:
+> - `punif(q, min, max)`: 累积概率函数(CDF),计算 $P(X \le q)$
+> - `dunif(x, min, max)`: 概率密度函数(PDF),在均匀分布中返回 $1/(b-a)$
+
 ```mermaid
 graph TB
     subgraph "连续均匀分布 - 公交等待案例"
@@ -185,6 +215,41 @@ graph LR
 
 > **侦探应用**: 计算Z-score就像是把不同案件的线索都转换成一种标准格式,便于比较其"罕见程度". 一个Z-score为+3的线索,无论在什么案件中,都意味着"极其罕见".
 
+#### 用R计算Z-score和正态分布概率
+
+```r
+# 例子1: 身高数据 (μ=170, σ=10)
+# 计算身高180cm的Z-score
+z1 <- (180 - 170) / 10
+z1
+# [1] 1
+
+# 例子2: IQ数据 (μ=100, σ=15)
+# 计算IQ 130的Z-score
+z2 <- (130 - 100) / 15
+z2
+# [1] 2
+
+# 标准正态分布: 计算概率
+# P(Z ≤ 1) - 身高180以下的百分比
+pnorm(1)
+# [1] 0.8413447
+
+# P(Z ≥ 2) - IQ高于130的百分比
+1 - pnorm(2)
+# [1] 0.02275013
+
+# 反向查询: 找出对应某个百分位的Z值
+# 找出第95百分位对应的Z值
+qnorm(0.95)
+# [1] 1.644854
+```
+
+> **R函数说明**:
+> - `pnorm(q, mean=0, sd=1)`: 标准正态分布的累积概率 $P(Z \le q)$
+> - `qnorm(p)`: 反向查询,给定概率p,返回对应的Z值
+> - `dnorm(x)`: 正态分布的概率密度函数值
+
 ---
 
 ## 6.3 中心极限定理：统计学的“魔法”
@@ -231,6 +296,40 @@ graph TB
 
 1.  **画密度图或直方图**: 看它是否大致呈现"钟形".
 2.  **正态分位数图 (Normal Quantile Plot, or Q-Q Plot)**: 这是一种更专业的工具. 如果图上的点大致分布在一条直线上,那么数据就可能来自一个正态分布.
+
+#### 用R检验正态性
+
+```r
+# 生成一些数据用于检验
+set.seed(123)
+# 正态分布数据
+normal_data <- rnorm(100, mean=170, sd=10)
+# 非正态分布数据(指数分布)
+non_normal_data <- rexp(100, rate=0.1)
+
+# 方法1: 绘制直方图
+hist(normal_data, main="正态分布数据", prob=TRUE)
+curve(dnorm(x, mean=170, sd=10), add=TRUE, col="red")
+
+# 方法2: Q-Q图 (最重要!)
+qqnorm(normal_data, main="Q-Q图: 正态数据")
+qqline(normal_data, col="red")  # 点应该沿着这条线
+
+# 方法3: Shapiro-Wilk检验 (统计检验)
+shapiro.test(normal_data)
+# p值 > 0.05 表示"看起来是正态的"
+
+# 对比非正态数据
+qqnorm(non_normal_data, main="Q-Q图: 非正态数据")
+qqline(non_normal_data, col="red")  # 点偏离直线
+shapiro.test(non_normal_data)
+# p值 < 0.05 表示"拒绝正态假设"
+```
+
+> **R函数说明**:
+> - `qqnorm()` + `qqline()`: 绘制Q-Q图,点接近直线表示正态
+> - `shapiro.test()`: Shapiro-Wilk检验, p>0.05 表示可能是正态分布
+> - `rnorm(n, mean, sd)`: 生成n个正态分布随机数
 
 ```mermaid
 graph TB
