@@ -1,6 +1,6 @@
 # 《应用统计学》趣味学习笔记
-
-本项目是 `Fall 2025 Applied Statistics (STAT-400-A)` 课程的个人学习笔记. 
+- [课堂讲义来源](https://stats.libretexts.org/Bookshelves/Introductory_Statistics/Statistics_with_Technology_2e_(Kozak))
+- 本项目是 `Fall 2025 Applied Statistics (STAT-400-A)` 课程的个人学习笔记. 
 
 目标是使用生动有趣的比喻和贴近生活的实例, 将课程中相对枯燥和理论化的统计学概念, 转化为更易于理解和记忆的内容. 我们将化身为“数据侦探”, 学习如何收集线索、分析模式、做出推断, 并最终揭示数据背后的真相.
 
