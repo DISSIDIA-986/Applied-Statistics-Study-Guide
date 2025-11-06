@@ -46,9 +46,9 @@ $$MOE = \text{临界值} \times SE$$
 
 根据Kozak教材，误差范围的计算公式有具体的表达形式，取决于我们要估计的参数类型：
 
-*   **估计总体均值 (σ已知)**: $E = z_{\alpha/2}\frac{\sigma}{\sqrt{n}}$
-*   **估计总体均值 (σ未知)**: $E = t_{\alpha/2}\frac{s}{\sqrt{n}}$
-*   **估计总体比例**: $E = z_{\alpha/2}\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}$
+*   **估计总体均值 (σ已知)**: $E = z_{\alpha/2} \cdot \frac{\sigma}{\sqrt{n}}$
+*   **估计总体均值 (σ未知)**: $E = t_{\alpha/2} \cdot \frac{s}{\sqrt{n}}$
+*   **估计总体比例**: $E = z_{\alpha/2} \cdot \sqrt{\frac{\hat{p}(1-\hat{p})}{n}}$
 
 其中 $\alpha = 1 - C$（C是置信水平），临界值为 $z_{\alpha/2}$ 或 $t_{\alpha/2}$。
 
@@ -102,11 +102,13 @@ $$MOE = \text{临界值} \times SE$$
 
 ### 6.2.4 确定所需样本量 (n)
 
-在进行研究前，你可能希望预先设定一个"希望达到的估计精确度"，即**希望的误差范围 **(MOE_wanted)。你可以据此计算出**最小**样本量。
+在进行研究前，你可能希望预先设定一个"希望达到的估计精确度"，即**希望的误差范围 **($E_{max}$)。你可以据此计算出**最小**样本量。
 
 **求解样本量 n 的公式**:
-从 $MOE = Z^* \times \frac{\sigma}{\sqrt{n}}$ 推导而来。如果 $\sigma$ 未知，用一个预估的标准差 $s$ 代替。
-$$n = \left(\frac{Z^* \times s}{MOE_{wanted}}\right)^2$$
+从 $E = Z^* \times \frac{\sigma}{\sqrt{n}}$ 推导而来。如果 $\sigma$ 未知，用一个预估的标准差 $s$ 代替。
+$$n = \left(\frac{Z^* \times s}{E_{max}}\right)^2$$
+
+> **注**: $E_{max}$ 为最大允许误差（即希望达到的误差范围）。
 
 > **关键**: **先**确定你想要的置信水平（确定 Z*）和希望的 MOE，**再**估算或预估标准差 s，就可以算出 n。
 
@@ -115,7 +117,7 @@ $$n = \left(\frac{Z^* \times s}{MOE_{wanted}}\right)^2$$
 > **情景**: 在进行上述身高调查前，你希望在95%置信水平下，误差范围 (MOE) 不超过 1 cm。根据过往经验，预估身高标准差 $\sigma \approx 10$ cm。
 
 *   $Z^* = 1.96$ (95% CL)
-*   $MOE_{wanted} = 1$ cm
+*   $E_{max} = 1$ cm
 *   $s = 10$ cm
 *   $n = \left(\frac{1.96 \times 10}{1}\right)^2 = (19.6)^2 = 384.16$
 
@@ -126,7 +128,7 @@ $$n = \left(\frac{Z^* \times s}{MOE_{wanted}}\right)^2$$
 根据Kozak教材，样本量的计算公式具体形式取决于要估计的参数类型：
 
 *   **估计总体均值**: $n = \left(\frac{z_{\alpha/2} \sigma}{E}\right)^2$
-*   **估计总体比例**: $n = \frac{z_{\alpha/2}^2 \hat{p}(1-\hat{p})}{E^2}$
+*   **估计总体比例**: $n = \frac{(z_{\alpha/2})^2 \hat{p}(1-\hat{p})}{E^2}$
 
 其中 $E$ 是希望的误差范围，当 $\hat{p}$ 未知时，使用 $\hat{p} = 0.5$ 以获得最大样本量（最保守的估计）。
 
@@ -313,8 +315,8 @@ sample_size_mean <- function(sigma, MOE_wanted, conf_level = 0.95) {
   return(ceiling(n))  # 向上取整
 }
 
-# 示例：身高调查，σ=10cm，希望MOE≤1cm，95%置信水平
-n_needed <- sample_size_mean(sigma = 10, MOE_wanted = 1, conf_level = 0.95)
+# 示例：身高调查，σ=10cm，希望E≤1cm，95%置信水平
+n_needed <- sample_size_mean(sigma = 10, MOE_wanted = 1, conf_level = 0.95)  # 注意：函数中仍使用MOE_wanted作为参数名
 cat("所需样本量:", n_needed, "\n")
 ```
 
@@ -329,10 +331,10 @@ sample_size_prop <- function(p_hat = 0.5, MOE_wanted, conf_level = 0.95) {
 }
 
 # 示例1：比例未知，使用p=0.5（最保守估计）
-n_needed1 <- sample_size_prop(p_hat = 0.5, MOE_wanted = 0.03, conf_level = 0.95)
+n_needed1 <- sample_size_prop(p_hat = 0.5, MOE_wanted = 0.03, conf_level = 0.95)  # 注意：函数中仍使用MOE_wanted作为参数名
 cat("比例未知（保守）所需样本量:", n_needed1, "\n")
 
 # 示例2：已知预估p=0.6
-n_needed2 <- sample_size_prop(p_hat = 0.6, MOE_wanted = 0.03, conf_level = 0.95)
+n_needed2 <- sample_size_prop(p_hat = 0.6, MOE_wanted = 0.03, conf_level = 0.95)  # 注意：函数中仍使用MOE_wanted作为参数名
 cat("已知p=0.6所需样本量:", n_needed2, "\n")
 ```
